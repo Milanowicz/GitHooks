@@ -1,0 +1,13 @@
+_*
+.~lock.*
+*php~
+.buildpath
+.idea
+.project
+.settings
+.buildpath
+.DS_Store
+Thumbs.db
+local.conf
+
+.settings/
