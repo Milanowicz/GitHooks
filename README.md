@@ -9,10 +9,12 @@ BASH Shell Scripts for Gitolite for git repository hooks to log or automatic che
 * init a root remote session to your server
 
 * # su git
-* $ cd
-* $ mkdir <Directory>
 
-* /home/git/local.conf
+* $ cd
+
+* $ mkdir scripts
+
+* $ nano /home/git/local.conf
 
     GitUser=git
     GitGroup=git
@@ -39,7 +41,9 @@ BASH Shell Scripts for Gitolite for git repository hooks to log or automatic che
 	~/scripts/pre-receive.sh
 
 * $ chmod +x repositories/GitHooks.git/hooks/post-receive
+
 * $ chmod +x repositories/GitHooks.git/hooks/pre-receive
+
 * $ exit
 
 Now you can push the GitHooks project to Gitolite
@@ -60,9 +64,9 @@ Hook post-receive by create a new repository
     ~/scripts/post-receive-bash.sh
 
 
-* # visudo
+* visudo (execute as root)
 
-    git ALL = (root) NOPASSWD: /bin/sh /home/git/scripts/Projects/<RepositoryName>HookReceive.sh
+    git ALL = (root) NOPASSWD: /bin/sh /home/git/scripts/Projects/<Hook Name>HookReceive.sh
 
 
 
@@ -79,7 +83,7 @@ Check the variable HookPath in this shell script, if the path to GitMan alright 
 
 You can create git hook by the shell script
 
-* $ bash CreateRepoHook.sh <Type> <Repository Name>
+* $ bash CreateRepoHook.sh <Type> <Repository Path> <Hook Name>
 
 
 ## License
