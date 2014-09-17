@@ -16,7 +16,7 @@ Start=$(date +%s)
 # Einlesen der Konfiguration
 while read Line; do
     Line=${Line//=/ }
-    Var=($Line)
+    Var=(${Line})
     export ${Var[0]}=${Var[1]}
 done < /home/git/local.conf
 
@@ -27,15 +27,15 @@ done < /home/git/local.conf
 # Branch Datei auslesen
 while read Elem
 do
-    SelectBranch=$Elem
+    SelectBranch=${Elem}
 
-done < $BranchFile
+done < ${BranchFile}
 
 
 # Verzeichnis loeschen
-ls $Path > /dev/null 2> /dev/null
+ls ${Path} > /dev/null 2> /dev/null
 if [ $? == 0 ]; then
-    rm -R $Path > /dev/null 2> /dev/null
+    rm -R ${Path} > /dev/null 2> /dev/null
 fi
 
 
@@ -47,9 +47,9 @@ echo -e "\nEnd of clone\n\nBranch "$SelectBranch" is clone\n"
 
 
 # Dateirechte setzen
-chown -R $WWWUser:$WWWGroup $Path
-find $Path -type f -exec chmod 640 {} \;
-find $Path -type d -exec chmod 750 {} \;
+chown -R $WWWUser:$WWWGroup ${Path}
+find ${Path} -type f -exec chmod 640 {} \;
+find ${Path} -type d -exec chmod 750 {} \;
 
 if [ "$1" == "sync" ]; then
         find $DBPath -type f -name *.sh -exec chmod 751 {} \;

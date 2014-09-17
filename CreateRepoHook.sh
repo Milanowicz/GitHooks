@@ -5,14 +5,14 @@
 ##  Create Hook files in git      ##
 ##  repository                    ##
 ##                                ##
-##  Script Version 0.0.7          ##
+##  Script Version 0.0.8          ##
 ##                                ##
 ####################################
 ####################################
 
 
 # Variables
-Fehler=0
+Error=0
 InputRepo=$2
 RepoName=
 FileName=
@@ -66,7 +66,7 @@ CreatePostReceiveHook(){
     else
 
         echo "Error: Can't create post-receive file: "$FileName
-        Fehler=2
+        Error=2
 
     fi
 
@@ -87,7 +87,7 @@ CreatePreReceiveHook(){
     else
 
         echo "Error: Can't create pre-receive file: "$FileName
-        Fehler=2
+        Error=2
 
     fi
 
@@ -97,7 +97,7 @@ CreatePreReceiveHook(){
 # Parameter prüfen
 if [ -z "$1" ] || [ -z "$2" ]; then
 
-    Fehler=1
+    Error=1
 
 # Bei Parameter Übergaben
 # Repo Pfad prüfen und Post Receive Hook erzeugen
@@ -124,13 +124,13 @@ elif [ "$1" == "www" ]; then
 
 else
 
-    Fehler=1
+    Error=1
 
 fi
 
 
 # Ausgabe der Hilfe f�r die Script Parameter
-if [ $Fehler -eq 1 ]; then
+if [ ${Error} -eq 1 ]; then
 
     echo -e "\n $ bash create-repo-hook.sh <Type> <Repository Path> <Hook Name>"
     echo -e "\n\tParameter Type\tDescription\n"
@@ -142,7 +142,7 @@ if [ $Fehler -eq 1 ]; then
 # dann abschliessende Arbeiten erledigen
 else
 
-    if [ $Fehler -eq 0 ]; then
+    if [ ${Error} -eq 0 ]; then
 
         chown $GitUser:$GitGroup $FileName
         chmod +x $FileName
@@ -150,7 +150,7 @@ else
         FileName=
         CreatePreReceiveHook
 
-        if [ $Fehler -eq 0 ]; then
+        if [ ${Error} -eq 0 ]; then
 
             echo "~/Hooks/pre-receive.sh $3" >> $FileName
 

@@ -14,7 +14,7 @@ Time=$(date +%d.%m.%Y" "%H:%M)
 # Einlesen der Konfiguration
 while read Line; do
 	Line=${Line//=/ }
-	Var=($Line)
+	Var=(${Line})
 	export ${Var[0]}=${Var[1]}
 done < ~/local.conf
 
@@ -30,20 +30,19 @@ Branch="${REF[2]}"
 OldRev="${ref[0]}"
 NewRev="${ref[1]}"
 RevEmpty="0000000000000000000000000000000000000000"
-UserName=$GL_USER
+UserName=${GL_USER}
 ProjectName=$1
 
 
 # Pruefe auf master Branch
-if [ "$MasterBranch" == "$Branch" ]; then
+if [ "${MasterBranch}" == "${Branch}" ]; then
 
-  if [ "$NewRev" == "$RevEmpty" ]; then
+  if [ "${NewRev}" == "${RevEmpty}" ]; then
     
-    Text="Error: You can not delete the $MasterBranch branch !!!"
-    echo $Time" "$ProjektName" by "$UserName": "$Text >> $Error
-    echo -e "\n"$Text"\n"
+    Text="Error: You can not delete the ${MasterBranch} branch !!!"
+    echo ${Time}" "${ProjektName}" by "${UserName}": "${Text}
 
-    die 1 "Error: $MasterBranch can not delete!"
+    die 1 "Error: ${MasterBranch} can not delete!"
 
   fi
 

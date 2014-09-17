@@ -18,38 +18,28 @@ BASH Shell Scripts for Gitolite for git repository hooks to log or automatic che
     GitGroup=git
     MasterBranch=master
     GitPath=/home/git/
-    GitHooksScriptPath=/home/git/<Directory>/Hooks
-    SymScript=$GitHooksScriptPath"Environment"
-    HookPath=$SymScript"Hooks/"
-    WWWHookPath=/home/git/<Directory>/Hooks/Projects
-    BashHookPath=/home/git/<Directory>/Hooks/Projects
+    GitHooksScriptPath=/home/git/scripts
+    WWWHookPath=/home/git/scripts/Projects
+    BashHookPath=/home/git/scripts/Projects
     RepoPath=/home/git/repositories/
-    CommitPath="/home/git/dok"
-    TempPath=/tmp/repo
-    Log=/var/log/git.log
-    Error=/var/log/giterror.log
     ! One empty row only at the end of this file !
 
 
-* $ chmod 660 scripts/<Directory>/Hooks/local.conf
+* $ chmod 660 ~/local.conf
 
 * $ nano repositories/GitHooks.git/hooks/post-receive
 
     #!/bin/bash
-	~/<Directory>/Hooks/githooks-sync.sh
+	~/scripts/GitSync.sh
 
 * $ nano repositories/GitHooks.git/hooks/pre-receive
 
 	#!/bin/bash
-	~/<Directory>/Hooks/pre-receive.sh
+	~/scripts/pre-receive.sh
 
 * $ chmod +x repositories/GitHooks.git/hooks/post-receive
 * $ chmod +x repositories/GitHooks.git/hooks/pre-receive
 * $ exit
-
-* # touch /var/log/git.log
-* # touch /var/log/giterror.log
-* # chown git:apache /var/log/git*
 
 Now you can push the GitHooks project to Gitolite
 
@@ -62,18 +52,18 @@ Hook post-receive by create a new repository
     #!/bin/bash
 
     * Normal git repository
-    ~/<Directory>/Hooks/post-receive.sh
+    ~/scripts/post-receive.sh
 
     * Website repository
-    ~/<Directory>/Hooks/post-receive-www.sh
+    ~/scripts/post-receive-www.sh
 
     * BASH git repository
-    ~/<Directory>/Hooks/post-receive-bash.sh
+    ~/scripts/post-receive-bash.sh
 
 
 * # visudo
 
-    git ALL = (root) NOPASSWD: /bin/sh /home/git/<Directory>/Hooks/Projects/<RepositoryName>HookReceive.sh
+    git ALL = (root) NOPASSWD: /bin/sh /home/git/scripts/Projects/<RepositoryName>HookReceive.sh
 
 
 
@@ -82,7 +72,7 @@ Hook post-receive by create a new repository
 
 Check the variable HookPath in this shell script, if the path to GitMan alright is
 
-* $ nano <Directory>/Hooks/post-receive-www.sh
+* $ nano ~/scripts/post-receive-www.sh
 
 
 ## Create a hook in a repository
@@ -90,7 +80,7 @@ Check the variable HookPath in this shell script, if the path to GitMan alright 
 
 You can create git hook by the shell script
 
-* $ bash create-repo-hook.sh <Type> <Repository Name>
+* $ bash CreateRepoHook.sh <Type> <Repository Name>
 
 
 ## License

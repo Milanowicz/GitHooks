@@ -9,7 +9,7 @@
 ##  it can check out a develop     ##
 ##  enviroment                     ##
 ##                                 ##
-##  Script Version 0.1.0           ##
+##  Script Version 0.1.1           ##
 ##                                 ##
 #####################################
 #####################################
@@ -19,7 +19,7 @@ Time=$(date +%d.%m.%Y" "%H:%M)
 # Einlesen der Konfiguration
 while read Line; do
 	Line=${Line//=/ }
-	Var=($Line)
+	Var=(${Line})
 	export ${Var[0]}=${Var[1]}
 done < ~/local.conf
 
@@ -35,21 +35,21 @@ Branch="${REF[2]}"
 OldRev="${ref[0]}"
 NewRev="${ref[1]}"
 RevEmpty="0000000000000000000000000000000000000000"
-UserName=$GL_USER
+UserName=${GL_USER}
 ProjectName=$1
 
 
 # Pruefe auf master Branch
-if [ "$MasterBranch" == "$Branch" ]; then
+if [ "${MasterBranch}" == "${Branch}" ]; then
 
-  if [ "$NewRev" == "$RevEmpty" ]; then
+  if [ "${NewRev}" == "${RevEmpty}" ]; then
 
-	die 1 "Error: $MasterBranch can not delete!"
+	die 1 "Error: ${MasterBranch} can not delete!"
 
   else
 
-    sudo sh $WWWHookPath""$ProjectName"HookReceive.sh"
-    LogText="branch update"
+    sudo sh ${WWWHookPath}""${ProjectName}"HookReceive.sh"
+    LogText="${MasterBranch} branch update"
 
   fi
 
@@ -60,19 +60,19 @@ else
   # Datei auslesen, worin die Test Branch abgelegt ist
   while read Elem
   do
-      SelectBranch=$Elem
-  done < $WWWHookPath"gitbranch/"$ProjectName"Branch"
+      SelectBranch=${Elem}
+  done < ${WWWHookPath}"gitbranch/"${ProjectName}"Branch"
 
 
   # Pruefe ob es sich dabei um die ausgewaehlte Test Branch
   # handelt, welche gerade gepusht wird UND pruefe ob die Branch
   # gerade NICHT vom Benutzer geloescht wird
-  if [ "$SelectBranch" == "$Branch" ] && [ "$NewRev" != "$RevEmpty" ]; then
+  if [ "${SelectBranch}" == "${Branch}" ] && [ "${NewRev}" != "${RevEmpty}" ]; then
 
-    sudo sh $WWWHookPath""$ProjectName"TestHookReceive.sh"
+    sudo sh ${WWWHookPath}""${ProjectName}"TestHookReceive.sh"
 
     # Pruefen auf neu oder update
-    if [ "$OldRev" == "$RevEmpty" ]; then
+    if [ "${OldRev}" == "${RevEmpty}" ]; then
       LogText="branch create"
     else
       LogText="branch update"
@@ -84,11 +84,11 @@ else
 
 
     # Pruefe ob Branch geloescht wird
-    if [ "$NewRev" == "$RevEmpty" ]; then
+    if [ "${NewRev}" == "${RevEmpty}" ]; then
       LogText="branch delete"
 
     # Pruefe ob Branch erzeugt wird
-    elif [ "$OldRev" == "$RevEmpty" ]; then
+    elif [ "${OldRev}" == "$[RevEmpty}" ]; then
       LogText="branch create"
 
     # Branch wurde geupdatet
@@ -101,9 +101,8 @@ else
 fi
 
 
-Output=$Time" "$ProjectName": "$Branch" "$LogText" by "$UserName
+Output=${Time}" "${ProjectName}": "${Branch}" "${LogText}" by "${UserName}
 
 
 # Ausgaben
-echo $Output >> $Log
-echo $Output
+echo ${Output}
