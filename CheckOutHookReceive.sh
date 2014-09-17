@@ -38,7 +38,7 @@ fi
 
 # Datenbank updaten
 if [ "$1" == "sync" ]; then
-    ${DBPath}"/SyncDB.sh" $1
+    ${DBPath}"/SyncDB.sh" $1 $2
 fi
 
 

@@ -62,11 +62,11 @@ elif [ -z "${GitHooksScriptPath}" ]; then
 else
 
 	# Pruefe ob Branch geloescht wird
-	if [ "$NewRev" == "$RevEmpty" ]; then
+	if [ "${NewRev}" == "${RevEmpty}" ]; then
 		LogText="branch delete"
 
 	# Pruefe ob Branch erzeugt wird
-	elif [ "$OldRev" == "$RevEmpty" ]; then
+	elif [ "$OldRev" == "${RevEmpty}" ]; then
 		LogText="branch create"
 
 	# Gebe aus das Branch geupdatet wurde

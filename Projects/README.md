@@ -1,11 +1,11 @@
-# Git Hooks=
+# Git Hooks Project files
 
-Put all the shell hook files in here
+You have the possibility to configure separate in each script the settings you need and checkout the git branch.
 
 
-## Production website push
+## Production website push for the `master` branch
 
-* $ nano <Repository>HookReceive.sh
+* $ nano <Hook Name>HookReceive.sh
 
     #!/bin/bash
 
@@ -22,37 +22,30 @@ Put all the shell hook files in here
     export Hostname="127.0.0.1"
     export MySQLDB="<sync to this db name>"
     export DBPath=$Path"/db"
-    export PathBin="/usr/bin/"
 
-    /home/git/<Directory>/Hooks/CheckOutHookReceive.sh sync
+    /home/git/scripts/CheckOutHookReceive.sh sync user
 
 
-## Test enviroment website push
+## Test environment website push for other branches
+
+* $ nano <Hook Name>_<Branch>.sh
 
     #!/bin/bash
 
-    # Test Verzeichnis
-    export TestPath="/var/www/<test>"
-
     # Webseiten Content
-    export ProjectName="<Repository>"
+    export Path="/var/www/<path>"
+    export CheckoutBranch="test"
     export LogMessage="Test update - "$ProjectName
-    export BranchFile="/home/git/<Directory>/Hooks/Branch/"$ProjectName"Branch"
-    export GitRepoURL="ssh://<Repo URL>/"$ProjectName".git"
     export WWWUser="<user>"
     export WWWGroup="<group>"
-    export Path=$TestPath"/"$ProjectName
 
 
-    # Datenbank Einstellung
+    # Database settings
     export Username="<user>"
     export Passwort="<password>"
     export Datenbank="<real db name>"
     export Hostname="127.0.0.1"
     export MySQLDB="<sync to this db name>"
     export DBPath=$Path"/db"
-    export PathBin="/usr/bin/"
 
-
-    # Test Umgebung erzeugen
-    /home/git/<Directory>/Hooks/CheckOutDevEnv.sh sync <framework> <version>
+    /home/git/scripts/CheckOutDevEnv.sh sync user

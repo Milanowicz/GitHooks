@@ -49,7 +49,7 @@ if [ "${MasterBranch}" == "${Branch}" ]; then
   else
 
     sudo sh ${WWWHookPath}""${ProjectName}"HookReceive.sh"
-    LogText="${MasterBranch} branch update"
+    LogText="branch update"
 
   fi
 
@@ -57,19 +57,23 @@ if [ "${MasterBranch}" == "${Branch}" ]; then
 # Andere Branch
 else
 
+  CheckOut=no
   # Datei auslesen, worin die Test Branch abgelegt ist
   while read Elem
   do
       SelectBranch=${Elem}
-  done < ${WWWHookPath}"gitbranch/"${ProjectName}"Branch"
+      if [ "${SelectBranch}" == "${Branch}" ]; then
+        CheckOut=yes
+      fi
+  done < ${BranchPath}"/"${ProjectName}"Branch"
 
 
   # Pruefe ob es sich dabei um die ausgewaehlte Test Branch
   # handelt, welche gerade gepusht wird UND pruefe ob die Branch
   # gerade NICHT vom Benutzer geloescht wird
-  if [ "${SelectBranch}" == "${Branch}" ] && [ "${NewRev}" != "${RevEmpty}" ]; then
+  if [ "${CheckOut}" == "yes" ] && [ "${NewRev}" != "${RevEmpty}" ]; then
 
-    sudo sh ${WWWHookPath}""${ProjectName}"TestHookReceive.sh"
+    sudo sh ${WWWHookPath}""${ProjectName}"_"${SelectBranch}".sh"
 
     # Pruefen auf neu oder update
     if [ "${OldRev}" == "${RevEmpty}" ]; then

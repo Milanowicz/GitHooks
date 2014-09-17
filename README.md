@@ -12,13 +12,14 @@ BASH Shell Scripts for Gitolite for git repository hooks to log or automatic che
 * $ cd
 * $ mkdir <Directory>
 
-/home/git/local.conf
+* /home/git/local.conf
 
     GitUser=git
     GitGroup=git
     MasterBranch=master
     GitPath=/home/git/
     GitHooksScriptPath=/home/git/scripts
+    BranchPath=/home/git/scripts/Branch
     WWWHookPath=/home/git/scripts/Projects
     BashHookPath=/home/git/scripts/Projects
     RepoPath=/home/git/repositories/
@@ -48,8 +49,6 @@ Hook post-receive by create a new repository
 ------------
 
 * $ nano Repository.git/hooks/post-receive
-
-    #!/bin/bash
 
     * Normal git repository
     ~/scripts/post-receive.sh
