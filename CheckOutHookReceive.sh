@@ -30,8 +30,8 @@ GIT_WORK_TREE=${Path} git checkout -f
 
 # Berechtigung setzen
 chown -R ${WWWUser}:${WWWGroup} ${Path}
-find ${Path} -type f -exec chmod 640 {} \;
-find ${Path} -type d -exec chmod 750 {} \;
+find ${Path} -type f -exec chmod 660 {} \;
+find ${Path} -type d -exec chmod 770 {} \;
 if [ "$1" == "sync" ]; then
     find ${DBPath} -type f -name *.sh -exec chmod 751 {} \;
 fi
