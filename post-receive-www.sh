@@ -48,7 +48,7 @@ if [ "${MasterBranch}" == "${Branch}" ]; then
 
   else
 
-    sudo sh ${WWWHookPath}""${ProjectName}"HookReceive.sh"
+    sudo sh ${WWWHookPath}"/"${ProjectName}"HookReceive.sh"
     LogText="branch update"
 
   fi
@@ -73,7 +73,7 @@ else
   # gerade NICHT vom Benutzer geloescht wird
   if [ "${CheckOut}" == "yes" ] && [ "${NewRev}" != "${RevEmpty}" ]; then
 
-    sudo sh ${WWWHookPath}""${ProjectName}"_"${SelectBranch}".sh"
+    sudo sh ${WWWHookPath}"/"${ProjectName}"_"${SelectBranch}".sh"
 
     # Pruefen auf neu oder update
     if [ "${OldRev}" == "${RevEmpty}" ]; then
@@ -92,7 +92,7 @@ else
       LogText="branch delete"
 
     # Pruefe ob Branch erzeugt wird
-    elif [ "${OldRev}" == "$[RevEmpty}" ]; then
+    elif [ "${OldRev}" == "${RevEmpty}" ]; then
       LogText="branch create"
 
     # Branch wurde geupdatet

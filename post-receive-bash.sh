@@ -47,7 +47,7 @@ if [ "${MasterBranch}" == "${Branch}" ]; then
 
   else
 
-    sudo sh ${BashHookPath}""${ProjectName}"HookReceive.sh"
+    sudo sh ${BashHookPath}"/"${ProjectName}"HookReceive.sh"
     LogText="branch update"
 
   fi
