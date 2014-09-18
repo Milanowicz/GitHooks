@@ -2,6 +2,10 @@
 
 You have the possibility to configure separate in each script the settings you need and checkout the git branch.
 
+Shell Script to sync or dump MySQL Databases
+
+[SyncDB.sh](https://github.com/Milanowicz/SyncDB.sh)
+
 
 ## Production website push for the `master` branch
 
@@ -17,8 +21,8 @@ You have the possibility to configure separate in each script the settings you n
 
     # Database settings
     export Username="<user>"
-    export Passwort="<password>"
-    export Datenbank="<real db name>"
+    export Password="<password>"
+    export DBNames="<real db name>"
     export Hostname="127.0.0.1"
     export MySQLDB="<sync to this db name>"
     export DBPath=$Path"/db"
@@ -42,8 +46,8 @@ You have the possibility to configure separate in each script the settings you n
 
     # Database settings
     export Username="<user>"
-    export Passwort="<password>"
-    export Datenbank="<real db name>"
+    export Password="<password>"
+    export DBNames="<real db name>"
     export Hostname="127.0.0.1"
     export MySQLDB="<sync to this db name>"
     export DBPath=$Path"/db"
