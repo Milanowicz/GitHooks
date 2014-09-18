@@ -50,7 +50,7 @@ TimeDiff=$(( $End - $Start ))
 if [ ${TimeDiff} -lt 60 ]; then
     ProcessTime=${TimeDiff}' sec'
 elif [ ${TimeDiff} -ge 60 ]; then
-    ProcessTime=$[${TimeDiff} / 60] ':'$[${TimeDiff} % 60] ''
+    ProcessTime=$[${TimeDiff} / 60]':'$[${TimeDiff} % 60] ''
 fi
 
 Output=${Time}" "${LogMessage}"  --  "${ProcessTime}
