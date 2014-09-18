@@ -73,7 +73,7 @@ else
   # gerade NICHT vom Benutzer geloescht wird
   if [ "${CheckOut}" == "yes" ] && [ "${NewRev}" != "${RevEmpty}" ]; then
 
-    sudo sh ${WWWHookPath}"/"${ProjectName}"_"${SelectBranch}".sh"
+    sudo sh ${WWWHookPath}"/"${ProjectName}"_"${Branch}".sh"
 
     # Pruefen auf neu oder update
     if [ "${OldRev}" == "${RevEmpty}" ]; then

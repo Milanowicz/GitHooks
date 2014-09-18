@@ -42,10 +42,10 @@ End=$(date +%s)
 TimeDiff=$(( $End - $Start ))
 
 # Pruefen, ob benoetigte Zeit kleiner als 60 sec ist
-if [ $TimeDiff -lt 60 ]; then
-  ProcessTime=$TimeDiff' sec'
-elif [ $TimeDiff -ge 60 ]; then
-  ProcessTime=$[$TimeDiff / 60]':'$[$TimeDiff % 60]
+if [ ${TimeDiff} -lt 60 ]; then
+  ProcessTime=${TimeDiff}' sec'
+elif [ ${TimeDiff} -ge 60 ]; then
+  ProcessTime=$[${TimeDiff} / 60]':'$[${TimeDiff} % 60]
 fi
 
 
