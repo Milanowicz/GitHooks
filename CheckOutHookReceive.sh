@@ -26,7 +26,7 @@ done < /home/git/local.conf
 
 # Auschecken des Webseiten Content
 GIT_WORK_TREE=${Path} git checkout -f
-
+chown -R ${GitUser}:${GitGroup} ${RepoPath}
 
 # Berechtigung setzen
 chown -R ${WWWUser}:${WWWGroup} ${Path}

@@ -26,9 +26,10 @@ done < /home/git/local.conf
 
 # Projekt auschecken
 GIT_WORK_TREE=${Path} git checkout -f ${CheckoutBranch}
+chown -R ${GitUser}:${GitGroup} ${RepoPath}
 
 # Dateirechte setzen
-chown -R $WWWUser:$WWWGroup ${Path}
+chown -R ${WWWUser}:${WWWGroup} ${Path}
 find ${Path} -type f -exec chmod 660 {} \;
 find ${Path} -type d -exec chmod 770 {} \;
 
