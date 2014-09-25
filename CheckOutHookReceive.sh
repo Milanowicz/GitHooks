@@ -25,7 +25,7 @@ done < /home/git/local.conf
 ######################################################
 
 # Auschecken des Webseiten Content
-GIT_WORK_TREE=${Path} git checkout -f
+GIT_WORK_TREE=${Path} git checkout -f ${MasterBranch}   
 chown -R ${GitUser}:${GitGroup} ${RepoPath}
 
 # Berechtigung setzen
