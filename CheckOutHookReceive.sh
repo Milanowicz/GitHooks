@@ -29,7 +29,7 @@ if [ -z ${CheckoutBranch} ]; then
     CheckoutBranch=${MasterBranch}
 fi
 
-GIT_WORK_TREE=${Path} git checkout -f ${MasterBranch}
+GIT_WORK_TREE=${Path} git checkout -f ${CheckoutBranch}
 chown -R ${GitUser}:${GitGroup} ${RepoPath}
 
 # Berechtigung setzen
