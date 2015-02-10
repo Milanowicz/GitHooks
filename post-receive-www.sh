@@ -9,14 +9,14 @@
 ##  it can check out a develop     ##
 ##  enviroment                     ##
 ##                                 ##
-##  Script Version 0.1.1           ##
+##  Script Version 0.1.2           ##
 ##                                 ##
 #####################################
 #####################################
 
 Time=$(date +%d.%m.%Y" "%H:%M)
 
-# Einlesen der Konfiguration
+# Read config values
 while read Line; do
 	Line=${Line//=/ }
 	Var=(${Line})
@@ -24,12 +24,12 @@ while read Line; do
 done < ~/local.conf
 
 
-# Auslesen der Git Parameter
+# Read Git parameters
 if ! [ -t 0 ]; then
   read -a ref
 fi
 
-# Shell Skript Variablen
+# Extract shell script variables
 IFS='/' read -ra REF <<< "${ref[2]}"
 Branch="${REF[2]}"
 OldRev="${ref[0]}"
@@ -39,7 +39,19 @@ UserName=${GL_USER}
 ProjectName=$1
 
 
-# Pruefe auf master Branch
+# Checkout Git Repository
+CheckoutRepository(){
+
+    ls ${WWWHookPath}"/"${ProjectName}"_"${Branch}".sh" > /dev/null 2> /dev/null
+
+    if [ $? == 0 ]; then
+        sudo sh ${WWWHookPath}"/"${ProjectName}"_"${Branch}".sh"
+    fi
+
+}
+
+
+# Check if master branch
 if [ "${MasterBranch}" == "${Branch}" ]; then
 
   if [ "${NewRev}" == "${RevEmpty}" ]; then
@@ -48,65 +60,35 @@ if [ "${MasterBranch}" == "${Branch}" ]; then
 
   else
 
-    sudo sh ${WWWHookPath}"/"${ProjectName}"HookReceive.sh"
+    CheckoutRepository
     LogText="branch update"
 
   fi
 
 
-# Andere Branch
+# Ohter Git Branch
 else
 
-  CheckOut=no
-  # Datei auslesen, worin die Test Branch abgelegt ist
-  while read Elem
-  do
-      SelectBranch=${Elem}
-      if [ "${SelectBranch}" == "${Branch}" ]; then
-        CheckOut=yes
-      fi
-  done < ${BranchPath}"/"${ProjectName}"Branch"
+  # check if branch should be delete
+  if [ "${NewRev}" == "${RevEmpty}" ]; then
+    LogText="branch delete"
 
+  # check if branch should be create
+  elif [ "${OldRev}" == "${RevEmpty}" ]; then
 
-  # Pruefe ob es sich dabei um die ausgewaehlte Test Branch
-  # handelt, welche gerade gepusht wird UND pruefe ob die Branch
-  # gerade NICHT vom Benutzer geloescht wird
-  if [ "${CheckOut}" == "yes" ] && [ "${NewRev}" != "${RevEmpty}" ]; then
+    CheckoutRepository
+    LogText="branch create"
 
-    sudo sh ${WWWHookPath}"/"${ProjectName}"_"${Branch}".sh"
-
-    # Pruefen auf neu oder update
-    if [ "${OldRev}" == "${RevEmpty}" ]; then
-      LogText="branch create"
-    else
-      LogText="branch update"
-    fi
-
-
-  # Andere Branch
+  # branch would be updated
   else
 
-
-    # Pruefe ob Branch geloescht wird
-    if [ "${NewRev}" == "${RevEmpty}" ]; then
-      LogText="branch delete"
-
-    # Pruefe ob Branch erzeugt wird
-    elif [ "${OldRev}" == "${RevEmpty}" ]; then
-      LogText="branch create"
-
-    # Branch wurde geupdatet
-    else
-      LogText="branch update"
-
-    fi
+    CheckoutRepository
+    LogText="branch update"
 
   fi
 fi
 
 
+# Output message
 Output=${Time}" "${ProjectName}": "${Branch}" "${LogText}" by "${UserName}
-
-
-# Ausgaben
 echo ${Output}

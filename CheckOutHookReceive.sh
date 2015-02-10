@@ -1,8 +1,8 @@
 #!/bin/bash
 ######################################################
 ##                                                  ##
-## Das Shell Skript kopierte den aktuellen master   ##
-## beim angegeben WWW Verzeichnis.                  ##
+## Shell Skript to checkout a git brach to other    ##
+## directory on the server                          ##
 ##                                                  ##
 ######################################################
 ######################################################
@@ -25,7 +25,11 @@ done < /home/git/local.conf
 ######################################################
 
 # Auschecken des Webseiten Content
-GIT_WORK_TREE=${Path} git checkout -f ${MasterBranch}   
+if [ -z ${CheckoutBranch} ]; then
+    CheckoutBranch=${MasterBranch}
+fi
+
+GIT_WORK_TREE=${Path} git checkout -f ${MasterBranch}
 chown -R ${GitUser}:${GitGroup} ${RepoPath}
 
 # Berechtigung setzen
@@ -53,6 +57,6 @@ elif [ ${TimeDiff} -ge 60 ]; then
     ProcessTime=$[${TimeDiff} / 60]':'$[${TimeDiff} % 60]
 fi
 
-Output=${Time}" "${LogMessage}"  --  "${ProcessTime}
+Output=${Time}" "${LogMessage}" -  Branch -> "${CheckoutBranch}"  --  "${ProcessTime}
 
 echo ${Output}

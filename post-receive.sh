@@ -14,7 +14,7 @@
 
 Time=$(date +%d.%m.%Y" "%H:%M)
 
-# Einlesen der Konfiguration
+# Read config values
 while read Line; do
 	Line=${Line//=/ }
 	Var=(${Line})
@@ -22,12 +22,12 @@ while read Line; do
 done < ~/local.conf
 
 
-# Auslesen der Git Parameter
+# Read Git parameters
 if ! [ -t 0 ]; then
   read -a ref
 fi
 
-# Shell Skript Variablen
+# Extract shell script variables
 IFS='/' read -ra REF <<< "${ref[2]}"
 Branch="${REF[2]}"
 OldRev="${ref[0]}"
@@ -37,7 +37,7 @@ UserName=${GL_USER}
 ProjectName=${GL_REPO}
 
 
-# Pruefe auf master Branch
+# Check if master branch
 if [ "${MasterBranch}" == "${Branch}" ]; then
 
   if [ "${NewRev}" == "${RevEmpty}" ]; then
@@ -51,18 +51,18 @@ if [ "${MasterBranch}" == "${Branch}" ]; then
   fi
 
 
-# Andere Branch
+# Ohter Git Branch
 else
 
-  # Pruefe ob Branch geloescht wird
+  # check if branch should be delete
   if [ "${NewRev}" == "${RevEmpty}" ]; then
     LogText="branch delete"
 
-  # Pruefe ob Branch erzeugt wird
+  # check if branch should be create
   elif [ "$OldRev" == "${RevEmpty}" ]; then
     LogText="branch create"
 
-  # Branch wurde geupdatet
+  # branch would be updated
   else
     LogText="branch update"
 
@@ -70,8 +70,6 @@ else
 fi
 
 
+# Output message
 Output=${Time}" "${ProjectName}": "${Branch}" "${LogText}" by "${UserName}
-
-
-# Ausgaben
 echo ${Output}

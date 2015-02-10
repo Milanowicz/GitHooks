@@ -11,7 +11,7 @@
 
 Time=$(date +%d.%m.%Y" "%H:%M)
 
-# Einlesen der Konfiguration
+# Read config values
 while read Line; do
 	Line=${Line//=/ }
 	Var=(${Line})
@@ -19,12 +19,12 @@ while read Line; do
 done < ~/local.conf
 
 
-# Auslesen der Git Parameter
+# Read Git parameters
 if ! [ -t 0 ]; then
   read -a ref
 fi
 
-# Shell Skript Variablen
+# Extract shell script variables
 IFS='/' read -ra REF <<< "${ref[2]}"
 Branch="${REF[2]}"
 OldRev="${ref[0]}"
@@ -34,7 +34,7 @@ UserName=${GL_USER}
 ProjectName=$1
 
 
-# Pruefe auf master Branch
+# Check if master branch
 if [ "${MasterBranch}" == "${Branch}" ]; then
 
   if [ "${NewRev}" == "${RevEmpty}" ]; then
