@@ -2,13 +2,18 @@
 ####################################
 ####################################
 ##                                ##
+##  gitolite-admin                ##
+##  post-receive script           ##
+##  Script Version 0.0.4          ##
+##                                ##
 ##  Git Pre Recevie Hook Script   ##
 ##                                ##
-##  Script Version 0.0.2          ##
+####################################
+##                                ##
+##  <parameter> Project Name      ##
 ##                                ##
 ####################################
 ####################################
-
 Time=$(date +%d.%m.%Y" "%H:%M)
 
 # Read config values
@@ -24,7 +29,8 @@ if ! [ -t 0 ]; then
   read -a ref
 fi
 
-# Extract shell script variables
+
+# Extract sheel script variables
 IFS='/' read -ra REF <<< "${ref[2]}"
 Branch="${REF[2]}"
 OldRev="${ref[0]}"
@@ -34,13 +40,16 @@ UserName=${GL_USER}
 ProjectName=$1
 
 
-# Check if master branch
+# Check if is master branch
 if [ "${MasterBranch}" == "${Branch}" ]; then
 
   if [ "${NewRev}" == "${RevEmpty}" ]; then
     
-    Text="Error: You can not delete the ${MasterBranch} branch !!!"
-    echo ${Time}" "${ProjektName}" by "${UserName}": "${Text}
+    Text="Error: You can not delete the ${Branch} branch !!!"
+    Output=${Time}" "${ProjektName}" by "${UserName}": "${Text}
+
+    echo ${Output} >> ~/hook.log
+    echo ${Output}
 
     die 1 "Error: ${MasterBranch} can not delete!"
 

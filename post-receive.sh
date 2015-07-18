@@ -2,16 +2,21 @@
 ####################################
 ####################################
 ##                                ##
+##  gitolite-admin                ##
+##  post-receive script           ##
+##  Version 0.1.0                 ##
+##                                ##
 ##  Git Post Recevie Hook Script  ##
 ##  it disallow to delelted the   ##
 ##  master branch                 ##
 ##  and it's log what happend     ##
 ##                                ##
-##  Script Version 0.0.8          ##
+####################################
+##                                ##
+## <parameter> Project = filename ##
 ##                                ##
 ####################################
 ####################################
-
 Time=$(date +%d.%m.%Y" "%H:%M)
 
 # Read config values
@@ -22,54 +27,118 @@ while read Line; do
 done < ~/local.conf
 
 
+######################################################
+##                 Bash Shell Script                ##
+######################################################
+
 # Read Git parameters
 if ! [ -t 0 ]; then
   read -a ref
 fi
 
-# Extract shell script variables
+# Extract sheel script variables
 IFS='/' read -ra REF <<< "${ref[2]}"
 Branch="${REF[2]}"
 OldRev="${ref[0]}"
 NewRev="${ref[1]}"
 RevEmpty="0000000000000000000000000000000000000000"
 UserName=${GL_USER}
-ProjectName=${GL_REPO}
+ProjectName=$1
+CheckoutBranch=${Branch}
+Action=
+
+# Checkout Git Repository
+CheckoutRepository(){
+
+    ls ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+
+    if [ $? == 0 ]; then
+        sudo sh ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh"
+    fi
+
+}
+
+# Build new Branch environment
+BuildEnvironment(){
+
+    ls ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+
+    if [ $? == 0 ]; then
+
+        cp ${HookPath}"/"${ProjectName}"_create_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+        if [ $? == 0 ]; then
+            sed -i '/master/c ${CheckoutBranch}' ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
+            sudo sh ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
+        fi
+
+        cp ${HookPath}"/"${ProjectName}"_delete_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+        if [ $? == 0 ]; then
+            sed -i '/master/c ${CheckoutBranch}' ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh"
+        fi
+
+        cp ${HookPath}"/"${ProjectName}"_update_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+        if [ $? == 0 ]; then
+            sed -i '/master/c ${CheckoutBranch}' ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh"
+        fi
+
+    fi
+}
+
+# Delete Branch environment
+DeleteEnvironemnt(){
+
+    ls ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+
+    if [ $? == 0 ]; then
+        sudo sh ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh"
+
+        rm ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+        rm ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+        rm ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+    fi
+}
 
 
-# Check if master branch
+# Check if is master branch
 if [ "${MasterBranch}" == "${Branch}" ]; then
 
-  if [ "${NewRev}" == "${RevEmpty}" ]; then
+    if [ "${NewRev}" == "${RevEmpty}" ]; then
 
-	die 1 "Error: ${MasterBranch} can not delete!"
+	    die 1 "Error: ${MasterBranch} can not by deleted!"
 
-  else
+    else
 
-    LogText="branch update"
+        Action="update"
+        CheckoutRepository
 
-  fi
+    fi
 
-
-# Ohter Git Branch
+# other branch
 else
 
-  # check if branch should be delete
-  if [ "${NewRev}" == "${RevEmpty}" ]; then
-    LogText="branch delete"
+    # check if branch should be delete
+    if [ "${NewRev}" == "${RevEmpty}" ]; then
 
-  # check if branch should be create
-  elif [ "$OldRev" == "${RevEmpty}" ]; then
-    LogText="branch create"
+        Action="delete"
+        DeleteEnvironemnt
 
-  # branch would be updated
-  else
-    LogText="branch update"
+    # check if branch should be create
+    elif [ "${OldRev}" == "${RevEmpty}" ]; then
 
-  fi
+        Action="create"
+        BuildEnvironment
+        CheckoutRepository
+
+    # branch would be updated
+    else
+
+        Action="update"
+        CheckoutRepository
+
+    fi
 fi
 
-
 # Output message
-Output=${Time}" "${ProjectName}": "${Branch}" "${LogText}" by "${UserName}
+Output=${Time}" "${ProjectName}": "${Action}" "${Branch}" by "${UserName}
+echo ${Output} >> ~/hook.log
 echo ${Output}

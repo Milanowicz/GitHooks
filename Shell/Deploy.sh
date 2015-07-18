@@ -4,7 +4,7 @@
 ##                                ##
 ##  GitHook Update Script         ##
 ##                                ##
-##  Script Version 0.0.6          ##
+##  Script Version 0.0.7          ##
 ##                                ##
 ####################################
 ####################################
@@ -44,6 +44,11 @@ if [ -n "${GitHooksScriptPath}" ] && [ "${MasterBranch}" == "${Branch}" ]; then
 	find ${GitHooksScriptPath} -type f -exec chmod 640 {} \;
 	find ${GitHooksScriptPath} -type d -exec chmod 750 {} \;
 	find ${GitHooksScriptPath} -type f -name *.sh -exec chmod 751 {} \;
+
+	rm ${GitHooksScriptPath}.gitignore > /dev/null 2> /dev/null
+	rm ${GitHooksScriptPath}LICENSE > /dev/null 2> /dev/null
+	rm ${GitHooksScriptPath}README.md > /dev/null 2> /dev/null
+	rm ${GitHooksScriptPath}Projects/README.md > /dev/null 2> /dev/null
 
 	echo "GitHooks Project updated"
 	LogText="branch update"

@@ -7,19 +7,69 @@ Shell Script to sync or dump MySQL Databases
 [SyncDB.sh](https://github.com/Milanowicz/SyncDB.sh)
 
 
-## Website push example for the `master` branch
+## Example for the `master` branch
 
-* $ nano <Hook Name>_master.sh
+### Create Branch
+    
+`$ nano <Hook Name>_build_master.sh`
 
     #!/bin/bash
 
-    # Website content
+    # Paths
+    export ConfigFile="/home/git/Config/"
+    export RepoPath="/home/git/repositories/testing.git"
+
+    # Webseiten Content
     export Path="/var/www/<path>"
-    export LogMessage="Website Update - <Project>"
+    # Default is `master` branch
     export CheckoutBranch="master"
     export WWWUser="<user>"
     export WWWGroup="<group>"
 
+    ${ConfigFile}Shell/Build.sh sync user
+
+
+### Delete Branch
+
+`$ nano <Hook Name>_delete_master.sh`
+
+    #!/bin/bash
+
+    # Paths
+    export ConfigFile="/home/git/Config/"
+    export RepoPath="/home/git/repositories/testing.git"
+
+    # Webseiten Content
+    export Path="/var/www/<path>"
+    # Default is `master` branch
+    export CheckoutBranch="master"
+    
+    # Database settings
+    export Username="<user>"
+    export Password="<password>"
+    export Hostname="127.0.0.1"
+    export MySQLDB="<sync to this db name>"
+
+    ${ConfigFile}Shell/Delete.sh sync user
+
+
+### Update Branch
+
+`$ nano <Hook Name>_update_master.sh`
+
+    #!/bin/bash
+
+    # Paths
+    export ConfigFile="/home/git/Config/"
+    export RepoPath="/home/git/repositories/testing.git"
+
+    # Webseiten Content
+    export Path="/var/www/<path>"
+    # Default is `master` branch
+    export CheckoutBranch="master"
+    export WWWUser="<user>"
+    export WWWGroup="<group>"
+    
     # Database settings
     export Username="<user>"
     export Password="<password>"
@@ -28,5 +78,4 @@ Shell Script to sync or dump MySQL Databases
     export MySQLDB="<sync to this db name>"
     export DBPath=$Path"/db"
 
-    /home/git/scripts/CheckOutHookReceive.sh sync user
-
+    ${ConfigFile}Shell/CheckOut.sh sync user

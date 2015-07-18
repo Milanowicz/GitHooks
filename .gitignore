@@ -9,5 +9,6 @@ _*
 .DS_Store
 Thumbs.db
 local.conf
-
 .settings/
+/Projects/*
+!/Projects/README.md

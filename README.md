@@ -1,89 +1,88 @@
-# Git Repository Hooks
+# [GitHooks](https://github.com/Milanowicz/GitHooks)
 
-BASH Shell Scripts for Gitolite for git repository hooks to log or automatic checkout (copy) somewhere you want.
+BASH Shell Scripts for Gitolite to handle git repository hooks.
+It will log and checkout a git repository automatic somewhere you like.
 
 
-## GitHooks Project Installation
+## Installation
 
-* create a repository via gitolite-admin.git
-* init a root remote session to your server
+Create GitHooks repository by gitolite-admin.git and connect to your server
 
-* # su git
+`# su git`
 
-* $ cd
+`$ cd`
 
-* $ mkdir scripts
+`$ mkdir Shell`
 
-* $ nano /home/git/local.conf
+`$ nano /home/git/local.conf`
 
     GitUser=git
     GitGroup=git
     MasterBranch=master
-    GitPath=/home/git/
-    GitHooksScriptPath=/home/git/scripts
-    BranchPath=/home/git/scripts/Branch
-    WWWHookPath=/home/git/scripts/Projects
-    BashHookPath=/home/git/scripts/Projects
-    RepoPath=/home/git/repositories/
+    WWWUser=<user>
+    WWWGroup=<group>
+    WWWRightDirectory=770
+    WWWRightFiles=660
+    WWWRightScript=771
+    HookPath=/home/git/Projects
+    GitRepoPath=/home/git/repositories/
+    GitHooksScriptPath=/home/git/
     ! One empty row only at the end of this file !
 
 
-* $ chmod 660 ~/local.conf
+`$ chmod 660 ~/local.conf`
 
-* $ nano repositories/GitHooks.git/hooks/post-receive
+`$ nano repositories/GitHooks.git/hooks/post-receive`
 
     #!/bin/bash
-	~/scripts/GitSync.sh
+    ~/Shell/Deploy.sh
 
-* $ nano repositories/GitHooks.git/hooks/pre-receive
+`$ nano repositories/GitHooks.git/hooks/pre-receive`
 
-	#!/bin/bash
-	~/scripts/pre-receive.sh
+    #!/bin/bash
+    ~/pre-receive.sh
 
-* $ chmod +x repositories/GitHooks.git/hooks/post-receive
+`$ chmod +x repositories/GitHooks.git/hooks/post-receive`
 
-* $ chmod +x repositories/GitHooks.git/hooks/pre-receive
+`$ chmod +x repositories/GitHooks.git/hooks/pre-receive`
 
-* $ exit
+`$ exit`
 
-Now you can push the GitHooks project to Gitolite
+`# visudo`
 
-
-Hook post-receive by create a new repository
-------------
-
-* $ nano Repository.git/hooks/post-receive
-
-    * Normal git repository
-    ~/scripts/post-receive.sh
-
-    * Website repository
-    ~/scripts/post-receive-www.sh
-
-    * BASH git repository
-    ~/scripts/post-receive-bash.sh
+    <user> ALL = (<user>) NOPASSWD: /bin/sh /home/git/Projects/*
 
 
-* visudo (execute as root)
-
-    git ALL = (root) NOPASSWD: /bin/sh /home/git/scripts/Projects/<Hook Name>HookReceive.sh
-
+Copy the `pre-receive.sh` and `Shell/Deploy.sh` to your server, then 
+you can push the GitHooks project and it will be checkout.
 
 
-## Website Repository
+## Create Git Hooks 
+
+You can create git hooks by the `CreateRepoHook.sh` shell script
+
+`# su git`
+
+`$ cd`
+
+`$ bash Shell/CreateRepoHook.sh <Repository Path> <Hook Name>`
 
 
-Check the variable HookPath in this shell script, if the path to GitMan alright is
+## Create Git Hooks by hand
 
-* $ nano ~/scripts/post-receive-www.sh
+`$ nano Repository.git/hooks/post-receive`
 
+    #!bin/bash
+    ~/post-receive.sh
 
-## Create a hook in a repository
+`$ nano Repository.git/hooks/pre-receive`
 
+    #!bin/bash
+    ~/pre-receive.sh
 
-You can create git hook by the shell script
+`$ chmod +x Repository.git/hooks/post-receive`
 
-* $ bash CreateRepoHook.sh <Type> <Repository Path> <Hook Name>
+`$ chmod +x Repository.git/hooks/pre-receive`
 
 
 ## License
