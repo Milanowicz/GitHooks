@@ -4,7 +4,7 @@
 ##                                ##
 ##  gitolite-admin                ##
 ##  post-receive script           ##
-##  Script Version 0.0.4          ##
+##  Script Version 0.0.5          ##
 ##                                ##
 ##  Git Pre Recevie Hook Script   ##
 ##                                ##
@@ -14,9 +14,11 @@
 ##                                ##
 ####################################
 ####################################
+
+# Script variables
 Time=$(date +%d.%m.%Y" "%H:%M)
 
-# Read config values
+# Export configuration values into shell environment
 while read Line; do
 	Line=${Line//=/ }
 	Var=(${Line})
@@ -28,7 +30,6 @@ done < ~/local.conf
 if ! [ -t 0 ]; then
   read -a ref
 fi
-
 
 # Extract sheel script variables
 IFS='/' read -ra REF <<< "${ref[2]}"

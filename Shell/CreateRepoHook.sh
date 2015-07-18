@@ -13,7 +13,7 @@
 ######################################
 ######################################
 
-# Variables
+# Script variables
 Error=0
 ErrorMessage=
 InputRepo=$1
@@ -21,11 +21,12 @@ RepoName=
 FileName=
 
 
-######################################################
-##                 Bash Shell Script                ##
-######################################################
+ls ~/local.conf > /dev/null 2> /dev/null
+if [ $? != 0 ]; then
+    die 1 "Error: File ~/local.conf not found!"
+fi
 
-# Einlesen der Konfiguration
+# Export configuration values into shell environment
 while read Line; do
     Line=${Line//=/ }
     Var=(${Line})
@@ -33,10 +34,19 @@ while read Line; do
 done < ~/local.conf
 
 
+# Check if right user who create files
+if [ "${GitCheckoutUser}" == `whoami` ]; then
+    die 1 "Error: Execute command as "${GitCheckoutUser}"!"
+fi
+
 if [ -z ${GitRepoPath} ]; then
     GitRepoPath="/home/git/repositories/"
 fi
 
+# Check if user enter parameter
+if [ -z "$1" ] || [ -z "$2" ]; then
+    Error=1
+fi
 
 # Check git repository directory
 CheckRepoPathName(){
@@ -109,12 +119,9 @@ CreatePreReceiveHook(){
         chown ${GitUser}:${GitGroup} ${FileName}
         chmod +x ${FileName}
 
-
     else
-
         Error=4
         ErrorMessage=FileName
-
     fi
 
     FileName=
@@ -122,13 +129,9 @@ CreatePreReceiveHook(){
 } # End of CreatePreReceiveHook
 
 
-# Check if user enter parameter
-if [ -z "$1" ] || [ -z "$2" ]; then
-    Error=1
-fi
-
-
-# Main Start
+##################################
+##    Main shell script start   ##
+##################################
 if [ ${Error} -eq 0 ]; then
 
     CheckRepoPathName
@@ -141,11 +144,9 @@ if [ ${Error} -eq 0 ]; then
         CreatePreReceiveHook
     fi
 
-fi
 
-
-# Error Messages
-if [ ${Error} -eq 1 ]; then
+# Show error messages
+elif [ ${Error} -eq 1 ]; then
 
     echo -e "\n $ bash CreateRepoHook.sh <Repository Path> <Hook Name>"
 

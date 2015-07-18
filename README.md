@@ -18,9 +18,10 @@ Create GitHooks repository by gitolite-admin.git and connect to your server
 
     GitUser=git
     GitGroup=git
+    GitCheckoutUser=root
     MasterBranch=master
-    WWWUser=<user>
-    WWWGroup=<group>
+    WWWUser=apache
+    WWWGroup=apache
     WWWRightDirectory=770
     WWWRightFiles=660
     WWWRightScript=771
@@ -47,6 +48,9 @@ Create GitHooks repository by gitolite-admin.git and connect to your server
 `$ chmod +x repositories/GitHooks.git/hooks/pre-receive`
 
 `$ exit`
+
+
+When checkout user not equal to webserver user, then edit `visudo`.
 
 `# visudo`
 

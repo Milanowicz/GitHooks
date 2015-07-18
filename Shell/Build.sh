@@ -7,21 +7,18 @@
 ##                                  ##
 ######################################
 ######################################
+
+# Script variables
 Time=$(date +%d.%m.%Y" "%H:%M)
 Start=$(date +%s)
 
-
-# Read config values
+# Export configuration values into shell environment
 while read Line; do
     Line=${Line//=/ }
     Var=(${Line})
     export ${Var[0]}=${Var[1]}
 done < ${ConfigFile}local.conf
 
-
-######################################################
-##                 Bash Shell Script                ##
-######################################################
 
 # Check if select branch exists
 if [ -z ${CheckoutBranch} ]; then
@@ -34,8 +31,9 @@ if [ $? == 0 ]; then
     mkdir -p ${Path}
 fi
 
-chown -R ${WWWUser}:${WWWGroup} ${Path}
-
+if [ "${WWWUser}" != "${GitCheckoutUser}" ]; then
+    chown -R ${WWWUser}:${WWWGroup} ${Path}
+fi
 
 
 # End Time

@@ -3,7 +3,7 @@
 ######################################
 ##                                  ##
 ##  Git Repository checkout script  ##
-##  Version 0.0.5                   ##
+##  Version 0.0.6                   ##
 ##                                  ##
 ######################################
 ##                                  ##
@@ -12,40 +12,63 @@
 ##                                  ##
 ######################################
 ######################################
+
+# Script Variables
 Time=$(date +%d.%m.%Y" "%H:%M)
 Start=$(date +%s)
 
-# Read config values
+# Export configuration values into shell environment
 while read Line; do
     Line=${Line//=/ }
     Var=(${Line})
     export ${Var[0]}=${Var[1]}
 done < ${ConfigFile}local.conf
 
-
-######################################################
-##                 Bash Shell Script                ##
-######################################################
-
 # Check if select branch exists
 if [ -z ${CheckoutBranch} ]; then
     CheckoutBranch=${MasterBranch}
 fi
 
-# Jump to repo and check it out
-cd ${RepoPath}
-GIT_DIR=${RepoPath}
-GIT_WORK_TREE=${Path} git checkout -f ${CheckoutBranch}
-chown -R ${GitUser}:${GitGroup} ${RepoPath}
 
-# Set user rights
-chown -R ${WWWUser}:${WWWGroup} ${Path}
-find ${Path} -type d -exec chmod ${WWWRightDirectory} {} \;
-find ${Path} -type f -exec chmod ${WWWRightFiles} {} \;
-find ${Path} -type f -name *.sh -exec chmod ${WWWRightScript} {} \;
+#############################
+##   Repository Checkout   ##
+#############################
+# Set envirnoment variables
+unset GIT_DIR
+export GIT_DIR=${RepoPath}
+export GIT_WORK_TREE=${Path}
+cd ${Path}
+
+# Checkout branch from Git Repository
+git checkout -f ${CheckoutBranch}
+
+# Update Git Submodules
+ls .gitmodules > /dev/null 2> /dev/null
+if [ $? == 0 ]; then
+    git submodule update --init --recursive --force
+fi
 
 
-# Database update
+################################
+##   File System operations   ##
+################################
+# Do correct the user rights from Git Repository
+if [ "${GitUser}" != "${GitCheckoutUser}" ]; then
+    chown -R ${GitUser}:${GitGroup} ${RepoPath}
+fi
+
+# Set user rights from Content who was checkout
+if [ "${WWWUser}" != "${GitCheckoutUser}" ]; then
+    chown -R ${WWWUser}:${WWWGroup} ${Path}
+    find ${Path} -type d -exec chmod ${WWWRightDirectory} {} \;
+    find ${Path} -type f -exec chmod ${WWWRightFiles} {} \;
+    find ${Path} -type f -name *.sh -exec chmod ${WWWRightScript} {} \;
+fi
+
+
+#############################
+##   Database operations   ##
+#############################
 if [ "$1" == "sync" ]; then
     ${DBPath}"/SyncDB.sh" $1 $2
 fi

@@ -4,7 +4,7 @@
 ##                                ##
 ##  gitolite-admin                ##
 ##  post-receive script           ##
-##  Version 0.1.0                 ##
+##  Version 0.1.1                 ##
 ##                                ##
 ##  Git Post Recevie Hook Script  ##
 ##  it disallow to delelted the   ##
@@ -17,19 +17,16 @@
 ##                                ##
 ####################################
 ####################################
+
+# Script Variables
 Time=$(date +%d.%m.%Y" "%H:%M)
 
-# Read config values
+# Export configuration values into shell environment
 while read Line; do
 	Line=${Line//=/ }
 	Var=(${Line})
 	export ${Var[0]}=${Var[1]}
 done < ~/local.conf
-
-
-######################################################
-##                 Bash Shell Script                ##
-######################################################
 
 # Read Git parameters
 if ! [ -t 0 ]; then
@@ -46,20 +43,34 @@ UserName=${GL_USER}
 ProjectName=$1
 CheckoutBranch=${Branch}
 Action=
+Command=
+
+
+# Execute shell command as user
+ExecuteCommand () {
+    if [ "${GitCheckoutUser}" == "root" ] || [ -z ${GitCheckoutUser} ]; then
+        sudo sh ${Command}
+    elif [ "${GitCheckoutUser}" == `whoami` ]; then
+        ${Command}
+    else
+        su - ${GitCheckoutUser} -c "sh ${Command}"
+    fi
+}
 
 # Checkout Git Repository
-CheckoutRepository(){
+CheckoutRepository () {
 
     ls ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
 
     if [ $? == 0 ]; then
-        sudo sh ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh"
+        Command=${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh"
+        ExecuteCommand
     fi
 
 }
 
 # Build new Branch environment
-BuildEnvironment(){
+BuildEnvironment () {
 
     ls ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
 
@@ -68,7 +79,8 @@ BuildEnvironment(){
         cp ${HookPath}"/"${ProjectName}"_create_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
         if [ $? == 0 ]; then
             sed -i '/master/c ${CheckoutBranch}' ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
-            sudo sh ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
+            Command=${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
+            ExecuteCommand
         fi
 
         cp ${HookPath}"/"${ProjectName}"_delete_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
@@ -85,12 +97,13 @@ BuildEnvironment(){
 }
 
 # Delete Branch environment
-DeleteEnvironemnt(){
+DeleteEnvironemnt () {
 
     ls ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
 
     if [ $? == 0 ]; then
-        sudo sh ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh"
+        Command=${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh"
+        ExecuteCommand
 
         rm ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
         rm ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
@@ -113,7 +126,7 @@ if [ "${MasterBranch}" == "${Branch}" ]; then
 
     fi
 
-# other branch
+# Other branch
 else
 
     # check if branch should be delete

@@ -7,11 +7,13 @@
 ##                                  ##
 ######################################
 ######################################
+
+# Script Variables
 Time=$(date +%d.%m.%Y" "%H:%M)
 Start=$(date +%s)
 
 
-# Read config values
+# Export configuration values into shell environment
 while read Line; do
     Line=${Line//=/ }
     Var=(${Line})
@@ -19,16 +21,13 @@ while read Line; do
 done < ${ConfigFile}local.conf
 
 
-######################################################
-##                 Bash Shell Script                ##
-######################################################
-
 # Check if select branch exists
 if [ -z ${CheckoutBranch} ]; then
     die 1 "Error: Branch ${CheckoutBranch} unknown!"
 fi
 
 
+# Delete checkout path from branch
 ls ${Path} > /dev/null 2> /dev/null
 if [ $? == 0 ]; then
     rm -rf ${Path}
@@ -36,6 +35,7 @@ else
     echo "Error: Directory not found!"
 fi
 
+# Delete MySQL Database from branch
 if [ -n ${MySQLDB} ]; then
 
     Prompt=`which mysql`
@@ -64,6 +64,8 @@ if [ -n ${MySQLDB} ]; then
     if [ $? == 0 ]; then
         ${Prompt} -u ${Username} -p${Password} -h ${Hostname} -P ${Port} \
             -e "DROP DATABASE IF EXISTS \`"${MySQLDB}"\`;"
+    else
+        echo "Error: MySQL executable binary not found°"
     fi
 
 fi

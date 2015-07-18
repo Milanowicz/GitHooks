@@ -2,7 +2,8 @@
 
 You have the possibility to configure separate in each script the settings you need and checkout the git branch.
 
-Shell Script to sync or dump MySQL Databases
+Shell Script to sync or dump from or to MySQL Databases.
+It's a Git optimized BASH Shell Script to commit the Database with into the Git Repository.
 
 [SyncDB.sh](https://github.com/Milanowicz/SyncDB.sh)
 

@@ -9,22 +9,23 @@
 ####################################
 ####################################
 
+# Script variables
 Time=$(date +%d.%m.%Y" "%H:%M)
 
-# Einlesen der Konfiguration
+# Export configuration values into shell environment
 while read Line; do
-	Line=${Line//=/ }
-	Var=(${Line})
-	export ${Var[0]}=${Var[1]}
-done < ~/local.conf
+    Line=${Line//=/ }
+    Var=(${Line})
+    export ${Var[0]}=${Var[1]}
+done < ${ConfigFile}local.conf
 
 
-# Auslesen der Git Parameter
+# Read Git parameters
 if ! [ -t 0 ]; then
   read -a ref
 fi
 
-# Shell Skript Variablen
+# Extract sheel script variables
 IFS='/' read -ra REF <<< "${ref[2]}"
 Branch="${REF[2]}"
 Branch="${REF[2]}"
@@ -35,8 +36,8 @@ UserName=${GL_USER}
 ProjectName=${GL_REPO}
 
 
-# Wenn der Skript Pfad vorhanden
-# und die master Branch geupdated werden soll
+# if script pfad was found
+# and the master branch should be updated
 if [ -n "${GitHooksScriptPath}" ] && [ "${MasterBranch}" == "${Branch}" ]; then
 
 	GIT_WORK_TREE=${GitHooksScriptPath} git checkout -f
@@ -51,11 +52,11 @@ if [ -n "${GitHooksScriptPath}" ] && [ "${MasterBranch}" == "${Branch}" ]; then
 	rm ${GitHooksScriptPath}Projects/README.md > /dev/null 2> /dev/null
 
 	echo "GitHooks Project updated"
-	LogText="branch update"
+	LogText="update"
 
 
-# Skript Pfad Variable nicht gesetzt
-# loggen und Skript abbrechen
+# Script path variable is not set
+# log it and exit
 elif [ -z "${GitHooksScriptPath}" ]; then
 
 	LogText="Error: GitHookScriptPath isn't set in file local.conf!"
@@ -63,27 +64,25 @@ elif [ -z "${GitHooksScriptPath}" ]; then
 	die 1 ${LogText}
 
 
-# Andere Branch
+# Other branch
 else
 
 	# Pruefe ob Branch geloescht wird
 	if [ "${NewRev}" == "${RevEmpty}" ]; then
-		LogText="branch delete"
+		LogText="delete"
 
 	# Pruefe ob Branch erzeugt wird
 	elif [ "$OldRev" == "${RevEmpty}" ]; then
-		LogText="branch create"
+		LogText="create"
 
 	# Gebe aus das Branch geupdatet wurde
 	else
-		LogText="branch update"
+		LogText="update"
 
 	fi
 fi
 
-
-Output=${Time}" "${ProjectName}": "${Branch}" "${LogText}" by "${UserName}
-
-
-# Ausgaben
+# Output message
+Output=${Time}" "${ProjectName}": "${LogText}" "${Branch}" by "${UserName}
+echo ${Output} >> ~/hook.log
 echo ${Output}
