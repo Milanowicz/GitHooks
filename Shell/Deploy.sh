@@ -4,7 +4,7 @@
 ##                                ##
 ##  GitHook Update Script         ##
 ##                                ##
-##  Script Version 0.0.7          ##
+##  Script Version 0.0.8          ##
 ##                                ##
 ####################################
 ####################################
@@ -40,7 +40,7 @@ ProjectName=${GL_REPO}
 # and the master branch should be updated
 if [ -n "${GitHooksScriptPath}" ] && [ "${MasterBranch}" == "${Branch}" ]; then
 
-	GIT_WORK_TREE=${GitHooksScriptPath} git checkout -f
+	GIT_WORK_TREE=${GitHooksScriptPath} git checkout -f master
 
 	find ${GitHooksScriptPath} -type f -exec chmod 640 {} \;
 	find ${GitHooksScriptPath} -type d -exec chmod 750 {} \;

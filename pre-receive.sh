@@ -45,7 +45,7 @@ ProjectName=$1
 if [ "${MasterBranch}" == "${Branch}" ]; then
 
   if [ "${NewRev}" == "${RevEmpty}" ]; then
-    
+
     Text="Error: You can not delete the ${Branch} branch !!!"
     Output=${Time}" "${ProjektName}" by "${UserName}": "${Text}
 

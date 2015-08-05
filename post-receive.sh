@@ -4,7 +4,7 @@
 ##                                ##
 ##  gitolite-admin                ##
 ##  post-receive script           ##
-##  Version 0.1.1                 ##
+##  Version 0.1.2                 ##
 ##                                ##
 ##  Git Post Recevie Hook Script  ##
 ##  it disallow to delelted the   ##
@@ -72,28 +72,32 @@ CheckoutRepository () {
 # Build new Branch environment
 BuildEnvironment () {
 
-    ls ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
-
+    ls ${HookPath}"/"${ProjectName}"_delete_"${MasterBranch}".sh" > /dev/null 2> /dev/null
     if [ $? == 0 ]; then
+        cp ${HookPath}"/"${ProjectName}"_delete_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+        if [ $? == 0 ]; then
+            sed -i "s/master/${CheckoutBranch}/g" ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh"
+        fi
+    fi
 
+    ls ${HookPath}"/"${ProjectName}"_update_"${MasterBranch}".sh" > /dev/null 2> /dev/null
+    if [ $? == 0 ]; then
+        cp ${HookPath}"/"${ProjectName}"_update_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
+        if [ $? == 0 ]; then
+            sed -i "s/master/${CheckoutBranch}/g" ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh"
+        fi
+    fi
+
+    ls ${HookPath}"/"${ProjectName}"_create_"${MasterBranch}".sh" > /dev/null 2> /dev/null
+    if [ $? == 0 ]; then
         cp ${HookPath}"/"${ProjectName}"_create_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
         if [ $? == 0 ]; then
-            sed -i '/master/c ${CheckoutBranch}' ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
+            sed -i "s/master/${CheckoutBranch}/g" ${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
             Command=${HookPath}"/"${ProjectName}"_create_"${CheckoutBranch}".sh"
             ExecuteCommand
         fi
-
-        cp ${HookPath}"/"${ProjectName}"_delete_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
-        if [ $? == 0 ]; then
-            sed -i '/master/c ${CheckoutBranch}' ${HookPath}"/"${ProjectName}"_delete_"${CheckoutBranch}".sh"
-        fi
-
-        cp ${HookPath}"/"${ProjectName}"_update_"${MasterBranch}".sh" ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh" > /dev/null 2> /dev/null
-        if [ $? == 0 ]; then
-            sed -i '/master/c ${CheckoutBranch}' ${HookPath}"/"${ProjectName}"_update_"${CheckoutBranch}".sh"
-        fi
-
     fi
+
 }
 
 # Delete Branch environment
@@ -133,6 +137,7 @@ else
     if [ "${NewRev}" == "${RevEmpty}" ]; then
 
         Action="delete"
+        git symbolic-ref HEAD refs/heads/${MasterBranch}
         DeleteEnvironemnt
 
     # check if branch should be create
