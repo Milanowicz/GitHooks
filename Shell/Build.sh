@@ -28,11 +28,11 @@ fi
 
 ls ${Path} > /dev/null 2> /dev/null
 if [ $? != 0 ]; then
-    mkdir -p ${Path}
+    mkdir -p ${Path} > /dev/null
 fi
 
 if [ "${WWWUser}" != "${GitCheckoutUser}" ]; then
-    chown -R ${WWWUser}:${WWWGroup} ${Path}
+    chown -R ${WWWUser}:${WWWGroup} ${Path} > /dev/null
 fi
 
 

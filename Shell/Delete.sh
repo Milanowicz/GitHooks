@@ -3,7 +3,7 @@
 ######################################
 ##                                  ##
 ##  Git Branch build environment    ##
-##  Version 0.0.1                   ##
+##  Version 0.0.2                   ##
 ##                                  ##
 ######################################
 ######################################
@@ -30,7 +30,7 @@ fi
 # Delete checkout path from branch
 ls ${Path} > /dev/null 2> /dev/null
 if [ $? == 0 ]; then
-    rm -rf ${Path}
+    rm -rf ${Path} > /dev/null
 else
     echo "Error: Directory not found!"
 fi
@@ -63,7 +63,7 @@ if [ -n ${MySQLDB} ]; then
     ls ${Prompt} > /dev/null 2> /dev/null
     if [ $? == 0 ]; then
         ${Prompt} -u ${Username} -p${Password} -h ${Hostname} -P ${Port} \
-            -e "DROP DATABASE IF EXISTS \`"${MySQLDB}"\`;"
+            -e "DROP DATABASE IF EXISTS \`"${MySQLDB}"\`;" 2> /dev/null
     else
         echo "Error: MySQL executable binary not found°"
     fi

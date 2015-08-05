@@ -20,6 +20,7 @@
 
 # Script Variables
 Time=$(date +%d.%m.%Y" "%H:%M)
+Start=$(date +%s)
 
 # Export configuration values into shell environment
 while read Line; do
@@ -156,7 +157,20 @@ else
     fi
 fi
 
+
+# End Time
+End=$(date +%s)
+TimeDiff=$(( $End - $Start ))
+
+# Calculate time by check if under 60 seconds
+if [ ${TimeDiff} -lt 60 ]; then
+    ProcessTime=${TimeDiff}' sec'
+elif [ ${TimeDiff} -ge 60 ]; then
+    ProcessTime=$[${TimeDiff} / 60]':'$[${TimeDiff} % 60]
+fi
+
+
 # Output message
-Output=${Time}" "${ProjectName}": "${Action}" "${Branch}" by "${UserName}
+Output=${Time}" "${ProjectName}": "${Action}" in "${ProcessTime}" for "${Branch}" by "${UserName}
 echo ${Output} >> ~/hook.log
 echo ${Output}
